@@ -22,8 +22,7 @@ module TestApi
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
-    #config.middleware.insert_before ActionDispatch::Static, Rack::Cors do
-    config.middleware.insert_before Rack::Lock, Rack::Cors do
+    config.middleware.insert_before ActionDispatch::Static, Rack::Cors do
 
       allow do
         origins '*'
@@ -38,5 +37,6 @@ module TestApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.serve_static_assets = true
   end
 end
