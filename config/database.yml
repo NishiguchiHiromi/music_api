@@ -48,7 +48,10 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: test_api_production
-  username: test_api
-  password: <%= ENV['TEST_API_DATABASE_PASSWORD'] %>
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  database: music_api_production
+  username: root
+  password:
+  socket: /var/lib/mysql/mysql.sock
