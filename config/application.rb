@@ -12,7 +12,7 @@ require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
-require 'sprockets/railtie'
+require 'sprockets/railtie'#なぜかいる
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -22,7 +22,9 @@ module TestApi
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
-    config.middleware.insert_before ActionDispatch::Static, Rack::Cors do
+    #config.middleware.insert_before ActionDispatch::Static, Rack::Cors do
+    config.middleware.insert_before Rack::Lock, Rack::Cors do
+
       allow do
         origins '*'
         resource '*', :headers => :any, :methods => [:get, :post, :delete]
