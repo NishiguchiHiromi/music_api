@@ -28,6 +28,17 @@ test:
   <<: *default
   database: test_api_test
 
+production:
+  <<: *default
+  database: music_api_production
+  #adapter: mysql2
+  #encoding: utf8
+  #pool: 5
+  #database: music_api_production
+  #username: root
+  #password:
+  #socket: /var/lib/mysql/mysql.sock
+
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -47,11 +58,3 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-production:
-  adapter: mysql2
-  encoding: utf8
-  pool: 5
-  database: music_api_production
-  username: root
-  password:
-  socket: /var/lib/mysql/mysql.sock
