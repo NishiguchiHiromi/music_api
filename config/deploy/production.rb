@@ -59,5 +59,5 @@
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
-server '13.115.13.187', user: 'hiromi', roles: %w{app db web}
-set :ssh_options, keys: '~/.ssh/apikeyrsa'
+server '13.230.13.190', user: 'hiromi', roles: %w{app db web}
+set :ssh_options, keys: '~/.ssh/id_rsa'
