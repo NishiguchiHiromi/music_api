@@ -3,7 +3,9 @@ class MusicsController < ApplicationController
 
   # GET /musics
   def index
-    @musics = Music.all.count
+    @musics = Music.all
+    logger.debug("ろぐろぐ")
+    logger.debug(Music.all.count)
     render json: @musics
   end
 
