@@ -60,4 +60,4 @@
 #     # password: "please use keys"
 #   }
 server '13.230.13.190', user: 'hiromi', roles: %w{app db web}
-set :ssh_options, keys: '~/.ssh/id_rsa'
+set :ssh_options, keys: '~/.ssh/aws_id_rsa'
