@@ -13,7 +13,7 @@ gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
@@ -26,6 +26,12 @@ gem 'puma', '~> 3.7'
 gem 'rack-cors'
 #gem 'rails_12factor'
 gem 'annotate', ">=2.6.0"
+gem 'dotenv-rails'
+gem 'omniauth'
+gem 'omniauth-twitter'
+gem 'devise'
+gem 'devise_token_auth'
+gem 'activerecord-session_store'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

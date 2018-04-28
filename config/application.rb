@@ -22,11 +22,19 @@ module TestApi
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
-    config.middleware.insert_before 0, Rack::Cors do#
-
+    config.middleware.use Rack::MethodOverride
+    config.middleware.use ActionDispatch::Cookies
+    #config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use ActionDispatch::Session::ActiveRecordStore#
+    config.session_store :active_record_store#
+    config.middleware.use ActionDispatch::Flash
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', :headers => :any, :methods => [:get, :post, :put, :patch, :delete, :options, :head]
+        resource '*',
+          :headers => :any,
+          :expose => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+          :methods => [:get, :post, :put, :patch, :delete, :options, :head]
       end
     end
     # Settings in config/environments/* take precedence over those specified here.

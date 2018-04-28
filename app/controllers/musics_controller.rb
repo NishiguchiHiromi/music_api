@@ -1,5 +1,6 @@
 class MusicsController < ApplicationController
-  before_action :set_music, only: [:show, :update, :destroy]
+  before_action :authenticate_api_user!
+  before_action :set_music, only: [:show]
   #skip_before_filter :verify_authenticity_token
   # GET /musics
   def index
@@ -14,15 +15,18 @@ class MusicsController < ApplicationController
     notes = music.notes.order(:bar_order, :note_order)
 
     data = Hash.new( Hash.new( {} ) )
+    data["id"] = music.id
     data["no"] = music.no
-    data["title"] = music.title
-    data["source"] = music.source
+    data["title"] = {value: music.title, x: 0, y: 0, w: 0}
+    data["composer"] = {value: music.composer, x: 0, y: 0, w: 0}
+    data["source"] = {value: music.source, x: 0, y: 0, w: 0}
     data["meter"] = {numerator: music.meter.split("/")[0].to_i, denominator: music.meter.split("/")[1].to_i}
     data["noteLength"] = {numerator: music.note_length.split("/")[0].to_i, denominator: music.note_length.split("/")[1].to_i}
     data["tempo"] = {length:{numerator: music.tempo[0,music.tempo.index("/")].to_i,
                              denominator:music.tempo[music.tempo.index("/")+1,music.tempo.index("=")-music.tempo.index("/")-1].to_i},
-                     tempo: music.tempo[music.tempo.index("=")+1,music.tempo.length-music.tempo.index("=")-1].to_i}
-    data["reference"] = music.reference
+                     tempo: music.tempo[music.tempo.index("=")+1,music.tempo.length-music.tempo.index("=")-1].to_i,
+                     x: 0, y: 0, w: 0}
+    data["reference"] = {value: music.reference, x: 0, y: 0, w: 0}
     data["key"] = music.key
     data["music"] = []
     notes.each{|note|
@@ -59,8 +63,12 @@ class MusicsController < ApplicationController
       Note.transaction do
         music_params = json_request["music"]
         music_params["user_id"] = 1
-        music = Music.new(music_params)
-        music.save!
+        music = Music.find_or_initialize_by(id:music_params["id"])
+        # if music.new_record? # 新規作成の場合は保存
+        #   music.id=null
+        # end
+        music.notes.destroy_all
+        music.update_attributes!(music_params)
         notes_params = json_request["notes"]
         notes_params.each_with_index{|bar, bar_index|
           bar.each_with_index{|note, note_index|
@@ -80,18 +88,24 @@ class MusicsController < ApplicationController
     render json: {result:"NG"}
   end
 
-  # PATCH/PUT /musics/1
-  def update
-    if @music.update(music_params)
-      render json: @music
-    else
-      render json: @music.errors, status: :unprocessable_entity
-    end
-  end
+  # # PATCH/PUT /musics/1
+  # def update
+  #   if @music.update(music_params)
+  #     render json: @music
+  #   else
+  #     render json: @music.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # DELETE /musics/1
   def destroy
-    @music.destroy
+    json_request = JSON.parse(request.body.read)
+    logger.debug(json_request)
+    musics = Music.where(id: json_request.keys)
+    musics.destroy_all
+    render json: {result:"OK"}
+    rescue => e
+    render json: {result:"NG"}
   end
 
   private
