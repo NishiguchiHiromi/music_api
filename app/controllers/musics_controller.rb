@@ -4,7 +4,7 @@ class MusicsController < ApplicationController
   #skip_before_filter :verify_authenticity_token
   # GET /musics
   def index
-    @musics = Music.all.select(:title,:id)
+    @musics = current_api_user.musics.select(:title,:id)
     render json: @musics
   end
 
@@ -62,8 +62,8 @@ class MusicsController < ApplicationController
     Music.transaction do
       Note.transaction do
         music_params = json_request["music"]
-        music_params["user_id"] = 1
-        music = Music.find_or_initialize_by(id:music_params["id"])
+        music_params["user_id"] = current_api_user.id
+        music = Music.find_or_initialize_by(id:music_params["id"], user_id: current_api_user.id)
         # if music.new_record? # 新規作成の場合は保存
         #   music.id=null
         # end
@@ -101,7 +101,7 @@ class MusicsController < ApplicationController
   def destroy
     json_request = JSON.parse(request.body.read)
     logger.debug(json_request)
-    musics = Music.where(id: json_request.keys)
+    musics = current_api_user.musics.where(id: json_request.keys)
     musics.destroy_all
     render json: {result:"OK"}
     rescue => e
@@ -112,7 +112,7 @@ class MusicsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_music
-      @music = Music.find(params[:id])
+      @music = current_api_user.musics.find(params[:id])
     end
 =begin
     # Only allow a trusted parameter "white list" through.
